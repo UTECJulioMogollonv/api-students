@@ -1,9 +1,12 @@
-from flask import Flask, request, jsonify, render_template
-import json
+from flask import Flask, request,jsonify, render_template
+import  json
 import sqlite3
 
 app = Flask(__name__)
 
+#an in memory students storage(using a list)
+#students = []
+#instead of a list,we need to create a connection to database where we store students
 def db_connection():
 	conn = None
 	try:
@@ -19,7 +22,7 @@ def students():
 	#access the cursor object
 	cursor = conn.cursor()
 
-#creating our GET request for all students
+#createing our GET request for all students
 	if request.method == "GET":
 		cursor = conn.execute("SELECT * FROM students")
 		students = [
@@ -29,8 +32,7 @@ def students():
 
 		if students is not None:
 			return jsonify(students)
-
-#creating our POST request for a student
+#createing our POST request for a student
 	if request.method == "POST":
 		firstname = request.form["firstname"]
 		lastname = request.form["lastname"]
@@ -51,7 +53,7 @@ def student(id):
 	cursor = conn.cursor()
 	student = None
 
-#creating our GET request for a student
+#createing our GET request for a student
 	if request.method == "GET":
 		cursor.execute("SELECT * FROM students WHERE id=?",(id,) )
 		rows = cursor.fetchall()
@@ -62,7 +64,7 @@ def student(id):
 		else:
 			return "Something went wrong", 404
 
-#creating our PUT request for a student
+#createing our PUT request for a student
 	if request.method == "PUT":
 		sql = """ UPDATE students SET firstname = ?,lastname = ?, gender = ? , age = ?
 				  WHERE id = ? """
@@ -84,7 +86,7 @@ def student(id):
 		conn.commit()
 		return jsonify(updated_student)
 
-#creating our DELETE request for a student
+#createing our DELETE request for a student
 	if request.method == "DELETE":
 		sql= """ DELETE FROM students WHERE id=? """
 		conn.execute(sql, (id,))
